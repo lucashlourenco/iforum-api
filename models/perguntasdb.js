@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize('iforum', 'root', 'Ads131822%', {
+const sequelize = new Sequelize('iforum', 'root', 'senha', {
     host: '127.0.0.1',
     dialect: 'mysql',
     port: 3306,
