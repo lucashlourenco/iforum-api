@@ -2,144 +2,59 @@ const express = require('express')
 const app = express()
 app.use(express.json());
 
-const Usuarios = require("./models/usuariosdb.js");
-const Cursos = require("./models/cursosdb.js");
-const Disciplinas = require("./models/disciplinasdb.js");
-const Perguntas =  require("./models/perguntasdb");
-const Respostas = require("./models/respostasdb") ;
-const Comentarios = require(".//models/comentariosdb")
+const Usuarios = require("./src/models/usuariosdb.js");
+const Cursos = require("./src/models/cursosdb.js");
+const Disciplinas = require("./src/models/disciplinasdb.js");
+const Perguntas =  require("./src/models/perguntasdb.js");
+const Respostas = require("./src/models/respostasdb.js") ;
+const Comentarios = require("./src/models/comentariosdb.js")
+const userController = require("./src/controller/userController.js")
+const cursoController = require("./src/controller/cursoController.js")
+const disciplinaController = require("./src/controller/disciplinaController.js")
+
+const syncDatabase = require("./syncDb.js");
+
+syncDatabase().then(()=>{
+    console.log("Tabelas criadas")
+}).catch((err)=> {
+    console.log("Erro: ", err)
+})
 
 app.get('/usuarios', async function (request, response) {
-    try {
-        let usuarios = await Usuarios.findAll();
-        response.status(200).json(usuarios);
-    } catch (error) {
-        console.error("Erro ao buscar usuários:", error);
-        response.status(500).json({ error: "Erro ao buscar usuários" });
-    }
+    userController.buscarUsuarios(request,response)
 });
 
 
 app.post('/usuarios', async function (request, response) {
-    try {
-        const {nome, email, senha} = request.body;
-        let novoUsuario = await Usuarios.create({
-            nome,
-            email,
-            senha
-        });
-        console.log("Novo usuário criado:", novoUsuario);
-
-        response.status(201).json(novoUsuario);
-    } catch (error) {
-        console.error("Erro ao criar usuário:", error);
-        response.status(500).json({ error: "Erro ao criar usuário" });
-    }
+    userController.criarUsuario(request,response);
 });
 
 app.put('/usuarios/:id', async function (request, response) {
-    try {
-        let id = request.params.id;
-        let {nome, email, senha} = request.body;
-        let usuarios = await Usuarios.findByPk(id);
-        if (usuarios) {
-            usuarios.nome = nome ? nome : usuarios.nome;
-            usuarios.email = email ? email : usuarios.email;
-            usuarios.senha = senha ? senha : usuarios.senha;
-            await usuarios.save();
-            response.status(200).json(usuario);
-        } else {
-            response.status(404).json({ error: "Usuário não encontrado" });
-        }
-    } catch (error) {
-        console.error("Erro ao atualizar usuário:", error);
-        response.status(500).json({ error: "Erro ao atualizar usuário" });
-    }
+    userController.atualizarUsuario(request,response)
 });
 
 app.delete('/usuarios/:id', async function (request, response) {
-    try {
-        let id = request.params.id;
-        let usuarios = await Usuarios.findByPk(id);
-        if (usuarios) {
-            await usuarios.destroy();
-            response.status(200).json({ message: "Usuário deletado com sucesso" });
-        } else {
-            response.status(404).json({ error: "Usuário não encontrado" });
-        }
-    } catch (error) {
-        console.error("Erro ao deletar usuário:", error);
-        response.status(500).json({ error: "Erro ao deletar usuário" });
-    }
+    userController.deletarUsuario(request,response)
 });
 
 app.get('/cursos', async function (request, response) {
-    try {
-        let cursos = await Cursos.findAll();
-        response.status(200).json(cursos);
-    } catch (error) {
-        console.error("Erro ao buscar os cursos:", error);
-        response.status(500).json({ error: "Erro ao buscar os cursos" });
-    }
+    cursoController.buscarCursos(request,response)
 });
 
 app.post('/cursos', async function (request, response) {
-    try {
-        const {nome} = request.body;
-        let novoCurso = await Cursos.create({
-            nome
-        });
-        console.log("Novo curso criado:", novoCurso);
-
-        response.status(201).json(novoCurso);
-    } catch (error) {
-        console.error("Erro ao criar curso:", error);
-        response.status(500).json({ error: "Erro ao criar curso" });
-    }
+    cursoController.criarCurso(request,response);
 });
 
 app.put('/cursos/:id', async function (request, response) {
-    try {
-        let id = request.params.id;
-        let {nome} = request.body;
-        let cursos = await Cursos.findByPk(id);
-        if (cursos) {
-            cursos.nome = nome ? nome : cursos.nome;
-            await cursos.save();
-            response.status(200).json(cursos);
-        } else {
-            response.status(404).json({ error: "Usuário não encontrado" });
-        }
-    } catch (error) {
-        console.error("Erro ao atualizar usuário:", error);
-        response.status(500).json({ error: "Erro ao atualizar curso" });
-    }
+    cursoController.atualizarCurso(request,response);
 });
 
 app.delete('/cursos/:id', async function (request, response) {
-    try {
-        let id = request.params.id;
-        let cursos = await Cursos.findByPk(id);
-        if (cursos) {
-            await cursos.destroy();
-            response.status(200).json({ message: "Curso deletado com sucesso" });
-        } else {
-            response.status(404).json({ error: "Curso não encontrado" });
-        }
-    } catch (error) {
-        console.error("Erro ao deletar curso:", error);
-        response.status(500).json({ error: "Erro ao deletar curso" });
-    }
+    cursoController.deletarCurso(request,response)
 });
 
 app.get('/disciplinas', async function (request, response) {
-    try {
-        let disciplinas = await Disciplinas.findAll();
-        response.status(200).json(disciplinas);
-    } catch (error) {
-        console.error("Erro ao buscar os disciplinas:", error);
-        response.status(500).json({ error: "Erro ao buscar os disciplinas" });
-    }
+    disciplinaController.buscarDisciplinas(request,response)
 });
 
 app.post('/disciplinas', async function (request, response) {
