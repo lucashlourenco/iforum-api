@@ -1,9 +1,6 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize('iforum', 'root', 'Nise1978%', {
-    host: '127.0.0.1',
-    dialect: 'mysql',
-    port: 3306,
-});
+const sequelize = require("../../db");
+
 
 sequelize
     .authenticate()
@@ -34,12 +31,6 @@ const Disciplinas = sequelize.define('Disciplinas', {
     }
 });
 
-Disciplinas.sync()
-    .then(() => {
-    console.log('Tabela criada.')
-})
-.catch((erro) => {
-    console.log('Erro ao criar tabela: ' + erro);
-});
+
     
 module.exports = Disciplinas;
