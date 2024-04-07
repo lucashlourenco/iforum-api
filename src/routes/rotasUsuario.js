@@ -10,7 +10,7 @@ const router = express.Router()
 router.get('/', userController.buscarUsuarios);
 router.post('/', userController.criarUsuario)
 router.put('/:id', userController.atualizarUsuario)
-router.delete('/:id ', userController.deletarUsuario)
+router.delete('/:id', userController.deletarUsuario)
 
 
 
