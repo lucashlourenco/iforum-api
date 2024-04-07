@@ -1,12 +1,12 @@
-const env = require("dotenv")
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
+const dotenv = require('dotenv');
 
-env.config()
+dotenv.config();
 
-const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_USER , process.env.DATABASE_PASSWORD , {
-    host: process.env.DATABASE_HOST,
-    dialect: process.env.DATABASE_DIALECT,
-    port: process.env.DATABASE_PORT,
+
+const sequelize = new Sequelize(process.env.DATABASE, process.env.USER, process.env.PASSWORD, {
+    dialect: process.env.DIALECT, 
+    host: process.env.HOST
 });
 
 module.exports = sequelize;
