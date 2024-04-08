@@ -11,8 +11,8 @@ function syncDatabase() {
         Usuarios.sync(),
         Disciplinas.sync(),
         Perguntas.sync(),
-        Comentarios.sync(),
-        Respostas.sync()
+        Respostas.sync(),
+        Comentarios.sync()
     ]).then(() => {
         console.log('Tabelas criadas com sucesso');
     }).catch((error) => {
