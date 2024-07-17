@@ -10,6 +10,6 @@ router.get("/", userController.buscarUsuarios);
 router.post("/", userController.criarUsuario);
 router.put("/:id", userController.atualizarUsuario);
 router.delete("/:id", userController.deletarUsuario);
-router.get("/login", userController.loginUsuarios);
+router.post("/login", userController.loginUsuarios);
 
 module.exports = router;
