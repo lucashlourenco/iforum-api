@@ -1,0 +1,30 @@
+# Use root/example as user/password credentials
+version: '2.24'
+
+services:
+
+  mysql_db:
+    image: mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+     - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+
+      
+  
+  api:
+    build: .
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql_db
+    ports:
+    - "8081:8081"
+    command: sh -c "while ! nc -z mysql_db 3306; do sleep 1; done; npm run dev"
+
+
+
