@@ -11,5 +11,6 @@ router.post("/", userController.criarUsuario);
 router.put("/:id", userController.atualizarUsuario);
 router.delete("/:id", userController.deletarUsuario);
 router.post("/login", userController.loginUsuarios);
+router.get('/existe/:email', userController.verificarUsuarioExistente);
 
 module.exports = router;

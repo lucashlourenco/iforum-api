@@ -1,4 +1,5 @@
 const Perguntas = require("../models/perguntasdb.js");
+const { Op } = require('sequelize');
 
 const buscarPerguntas = async(request,response) => {
     try {
@@ -61,7 +62,27 @@ const deletarPergunta = async (request,response) => {
         console.error("Erro ao deletar Pergunta:", error);
         response.status(500).json({ error: "Erro ao deletar pergunta" });
     }
+}
 
+const buscarPerguntasPorString = async (request, response) => {
+    try {
+        const searchString = request.params.string;
+        let perguntas = await Perguntas.findAll({
+            where: {
+                descricao: {
+                    [Op.like]: `%${searchString}%`
+                }
+            }
+        });
+        if (perguntas.length > 0) {
+            response.status(200).json(perguntas);
+        } else {
+            response.status(404).json({ error: "Nenhuma pergunta encontrada" });
+        }
+    } catch (error) {
+        console.error("Erro ao buscar perguntas por string:", error);
+        response.status(500).json({ error: "Erro ao buscar perguntas por string" });
+    }
 }
 
 module.exports = {
@@ -69,4 +90,5 @@ module.exports = {
     criarPergunta,
     atualizarPergunta,
     deletarPergunta,
+    buscarPerguntasPorString
 }

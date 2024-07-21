@@ -79,10 +79,29 @@ const deletarUsuario = async (request, response) => {
   }
 };
 
+const verificarUsuarioExistente = async (request, response) => {
+  try {
+    const { email } = request.params;  // Recebe o email como parâmetro de URL
+    let usuario = await Usuarios.findOne({
+      where: { email: email }
+    });
+
+    if (usuario) {
+      response.status(200).json({ message: "Este e-mail já está cadastrado!" });
+    } else {
+      response.status(404).json({ message: "Este e-mail não foi encontrado" });
+    }
+  } catch (error) {
+    console.error("Erro ao verificar se o e-mail existe:", error);
+    response.status(500).json({ error: "Erro ao verificar se o e-mail existe" });
+  }
+};
+
 module.exports = {
   buscarUsuarios,
   criarUsuario,
   atualizarUsuario,
   deletarUsuario,
   loginUsuarios,
+  verificarUsuarioExistente
 };
