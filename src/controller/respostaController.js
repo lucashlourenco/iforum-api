@@ -1,4 +1,6 @@
 const Respostas = require("../models/respostasdb.js");
+const Comentarios = require("../models/comentariosdb.js");
+const Usuarios = require("../models/usuariosdb.js");
 
 const buscarRespostas = async(request,response) => {
     try {
@@ -7,6 +9,27 @@ const buscarRespostas = async(request,response) => {
     } catch (error) {
         console.error("Erro ao buscar respostas:", error);
         response.status(500).json({ error: "Erro ao buscar respostas" });
+    }
+}
+
+const buscarRespostasPorId = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const resposta = await Respostas.findByPk(id, {
+            include: [
+                { model: Comentarios },
+                { model: Usuarios }
+        
+            ]
+        });
+
+        if (!resposta) {
+            res.status(404).json({ message: "Resposta não encontrada" });
+        } else {
+            res.status(200).send(resposta);
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -66,6 +89,7 @@ const deletarResposta = async (request,response) => {
 
 module.exports = {
     buscarRespostas,
+    buscarRespostasPorId,
     criarResposta,
     atualizarResposta,
     deletarResposta,

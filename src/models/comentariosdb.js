@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../../db")
+const Respostas = require("../models/respostasdb");
 sequelize
     .authenticate()
     .then(function() {
@@ -25,11 +26,13 @@ const Comentarios = sequelize.define('Comentarios', {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-            model: 'Respostas',
+            model: Respostas,
             key: 'id'
         }
     }
 });
 
-    
+Comentarios.belongsTo(Respostas, {foreignKey: 'id_resposta'});
+Respostas.hasMany(Comentarios, { foreignKey: 'id_resposta' });
+
 module.exports = Comentarios;

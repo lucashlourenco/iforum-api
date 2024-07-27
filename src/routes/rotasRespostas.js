@@ -8,6 +8,7 @@ const router = express.Router()
 
 
 router.get('/', respostaController.buscarRespostas);
+router.get('/:id', respostaController.buscarRespostasPorId);
 router.post('/', respostaController.criarResposta)
 router.put('/:id', respostaController.atualizarResposta)
 router.delete('/:id', respostaController.deletarResposta)

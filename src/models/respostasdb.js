@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../../db");
+const Usuarios = require("../models/usuariosdb");
+
 
 
 
@@ -38,5 +40,6 @@ const Respostas = sequelize.define('Respostas', {
     }
 });
 
-    
+
+
 module.exports = Respostas;

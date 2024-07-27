@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../../db");
 
 
+
 sequelize
     .authenticate()
     .then(function() {
@@ -32,4 +33,12 @@ const Usuarios = sequelize.define('Usuarios', {
     }
 });
 
+
+
 module.exports = Usuarios;
+
+const Respostas = require("../models/respostasdb");
+
+// Configurar a associação após importar Respostas
+Usuarios.hasMany(Respostas, { foreignKey: 'id_usuario' });
+Respostas.belongsTo(Usuarios, { foreignKey: 'id_usuario' });
