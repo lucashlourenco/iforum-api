@@ -6,6 +6,7 @@ const Respostas = require('./src/models/respostasdb');
 const Comentarios = require('./src/models/comentariosdb');
 
 const sequelize = require("./db");
+const populateDatabase = require('./src/helpers/populateDb');
 
 async function checkIfTableExists(tableName) {
     const queryInterface = sequelize.getQueryInterface();
@@ -28,6 +29,8 @@ async function syncDatabase() {
         if (!usuariosTableExists || !cursosTableExists || !disciplinasTableExists || !perguntasTableExists || !respostasTableExists || !comentariosTableExists) {
             await sequelize.sync({ alter: true });
             console.log('Tabelas criadas ou atualizadas com sucesso');
+            console.log("\n\n Iniciando script de população\n\n")
+            populateDatabase()
         } else {
             console.log('Tabelas já existem, sincronização não necessária');
         }

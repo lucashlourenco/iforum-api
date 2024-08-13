@@ -20,7 +20,7 @@ const rotasPergunta = require("./src/routes/rotasPergunta.js");
 const rotasResposta = require("./src/routes/rotasRespostas.js");
 const rotasComentario = require("./src/routes/rotasComentario.js");
 const { Sequelize } = require('sequelize');
-
+const populateDatabase = require('./src/helpers/populateDb.js')
 const syncDatabase = require("./syncDb.js");
 syncDatabase();
 
