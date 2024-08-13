@@ -25,7 +25,7 @@ services:
       - mysql_db
     ports:
     - "8081:8081"
-    command: sh -c "while ! nc -z mysql_db 3306; do sleep 1; done; npm run dev"
+    command: sh -c "while ! nc -z mysql_db 3306; do sleep 1; done; node ./syncDb.js && node ./src/helpers/populateDb.js && npm run dev"
 
 
 
