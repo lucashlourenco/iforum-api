@@ -11,7 +11,7 @@ router.get('/', perguntaController.buscarPerguntas);
 router.post('/', perguntaController.criarPergunta)
 router.put('/:id', perguntaController.atualizarPergunta)
 router.delete('/:id', perguntaController.deletarPergunta)
-
+router.get('/buscar/:string', perguntaController.buscarPerguntasPorString);
 
 
 module.exports = router;

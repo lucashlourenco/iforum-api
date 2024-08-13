@@ -1,4 +1,5 @@
 const Respostas = require("../models/respostasdb.js");
+const { Op } = require('sequelize');
 
 const buscarRespostas = async(request,response) => {
     try {
@@ -64,9 +65,31 @@ const deletarResposta = async (request,response) => {
     }
 }
 
+const buscarRespostasPorString = async (request, response) => {
+    try {
+        const searchString = request.params.string;
+        let respostas = await Respostas.findAll({
+            where: {
+                descricao: {
+                    [Op.like]: `%${searchString}%`
+                }
+            }
+        });
+        if (respostas.length > 0) {
+            response.status(200).json(respostas);
+        } else {
+            response.status(404).json({ error: "Nenhuma resposta encontrada" });
+        }
+    } catch (error) {
+        console.error("Erro ao buscar respostas por string:", error);
+        response.status(500).json({ error: "Erro ao buscar respostas por string" });
+    }
+}
+
 module.exports = {
     buscarRespostas,
     criarResposta,
     atualizarResposta,
     deletarResposta,
+    buscarRespostasPorString
 }
