@@ -1,6 +1,8 @@
 const Disciplinas = require("../models/disciplinasdb.js");
+const { Op } = require("sequelize");  // Importando operadores do Sequelize
 
-const buscarDisciplinas = async(request,response) => {
+
+const buscarDisciplinas = async (request, response) => {
     try {
         let disciplinas = await Disciplinas.findAll();
         response.status(200).json(disciplinas);
@@ -10,9 +12,9 @@ const buscarDisciplinas = async(request,response) => {
     }
 }
 
-const criarDisciplina = async (request,response)=> {
+const criarDisciplina = async (request, response) => {
     try {
-        const {nome, periodo, curso_id} = request.body;
+        const { nome, periodo, curso_id } = request.body;
         let novaDisciplina = await Disciplinas.create({
             nome,
             periodo,
@@ -27,10 +29,40 @@ const criarDisciplina = async (request,response)=> {
     }
 }
 
-const atualizarDisciplina = async(request,response) => {
+const buscarDisciplinasPorPeriodo = async (request, response) => {
+    try {
+        const { periodo } = request.query;
+
+        if (!periodo) {
+            return response.status(400).json({ error: "O parâmetro 'periodo' é obrigatório" });
+        }
+
+        // Se 'periodo' for uma string, divida-o em um array
+        const periodos = Array.isArray(periodo) ? periodo : periodo.split(',');
+
+        let disciplinas = await Disciplinas.findAll({
+            where: {
+                periodo: {
+                    [Op.in]: periodos  // Utilizando o operador IN do Sequelize
+                }
+            }
+        });
+
+        if (disciplinas.length > 0) {
+            response.status(200).json(disciplinas);
+        } else {
+            response.status(404).json({ message: "Nenhuma disciplina encontrada para os períodos especificados" });
+        }
+    } catch (error) {
+        console.error("Erro ao buscar as disciplinas por período:", error);
+        response.status(500).json({ error: "Erro ao buscar as disciplinas por período" });
+    }
+}
+
+const atualizarDisciplina = async (request, response) => {
     try {
         let id = request.params.id;
-        let {nome, periodo, curso_id} = request.body;
+        let { nome, periodo, curso_id } = request.body;
         let disciplinas = await Disciplinas.findByPk(id);
         if (disciplinas) {
             disciplinas.nome = nome ? nome : disciplinas.nome;
@@ -47,7 +79,7 @@ const atualizarDisciplina = async(request,response) => {
     }
 }
 
-const deletarDisciplina = async (request,response)=> {
+const deletarDisciplina = async (request, response) => {
     try {
         let id = request.params.id;
         let disciplinas = await Disciplinas.findByPk(id);
@@ -63,11 +95,11 @@ const deletarDisciplina = async (request,response)=> {
     }
 }
 
-module.exports= {
+module.exports = {
     buscarDisciplinas,
     criarDisciplina,
     atualizarDisciplina,
-    deletarDisciplina
-
+    deletarDisciplina,
+    buscarDisciplinasPorPeriodo
 
 }

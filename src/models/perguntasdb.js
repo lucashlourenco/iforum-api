@@ -37,12 +37,6 @@ const Perguntas = sequelize.define('Perguntas', {
         }
     }
 });
-//o sync foi utilizado para sincronizar a adição do titulo ao banco - Thiago
-Perguntas.sync({ alter: true }).then(() => {
-    console.log('Tabela Perguntas sincronizada');
-}).catch((error) => {
-    console.error('Erro ao sincronizar tabela Perguntas:', error);
-});
 
     
 module.exports = Perguntas;
