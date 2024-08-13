@@ -13,8 +13,9 @@ const buscarPerguntas = async(request,response) => {
 
 const criarPergunta = async(request,response)=> {
     try {
-        const {descricao, usuario_id, disciplina_id} = request.body;
+        const {titulo,descricao, usuario_id, disciplina_id} = request.body;
         let novaPergunta = await Perguntas.create({
+            titulo,
             descricao,
             usuario_id,
             disciplina_id
@@ -31,9 +32,10 @@ const criarPergunta = async(request,response)=> {
 const atualizarPergunta = async(request,response) => {
     try {
         let id = request.params.id;
-        let {descricao, usuario_id, disciplina_id} = request.body;
+        let {titulo,descricao, usuario_id, disciplina_id} = request.body;
         let perguntas = await Perguntas.findByPk(id);
         if (perguntas) {
+            perguntas.titulo = titulo ? titulo : perguntas.titulo;
             perguntas.descricao = descricao ? descricao : perguntas.descricao;
             perguntas.usuario_id = usuario_id ? usuario_id : perguntas.usuario_id;
             perguntas.disciplina_id = disciplina_id ? disciplina_id : perguntas.disciplina_id;
