@@ -2,19 +2,20 @@ const Sequelize = require("sequelize");
 const sequelize = require("../../db")
 sequelize
     .authenticate()
-    .then(function() {
+    .then(function () {
         console.log('Conectado');
     })
     .catch(function (erro) {
         console.log('Erro ao conectar: ' + erro);
     });
-    
+
 const Comentarios = sequelize.define('Comentarios', {
     id_usuario: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references:  { model: 'Usuarios', 
-        key: 'id'
+        references: {
+            model: 'Usuarios',
+            key: 'id'
         }
     },
     descricao: {
@@ -31,5 +32,5 @@ const Comentarios = sequelize.define('Comentarios', {
     }
 });
 
-    
+
 module.exports = Comentarios;
