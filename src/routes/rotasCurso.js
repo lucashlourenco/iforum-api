@@ -10,8 +10,9 @@ const router = express.Router()
 router.get('/', cursoController.buscarCursos);
 router.post('/', cursoController.criarCurso)
 router.put('/:id', cursoController.atualizarCurso)
-router.delete('/:id',cursoController.deletarCurso)
+router.get('/:id/periodos', cursoController.buscarQuantidadePeriodos)
 
+router.delete('/:id', cursoController.deletarCurso)
 
 
 module.exports = router;

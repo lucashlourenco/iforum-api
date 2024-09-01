@@ -5,9 +5,36 @@ const Disciplinas = require('../models/disciplinasdb');
 const Cursos = require('../models/cursosdb');
 
 const buscarPerguntas = async (request, response) => {
-    const {courseId} = request.query; // Obtém o courseId dos parâmetros de consulta (query parameters)
+    const {courseId, disciplinaIds, periodos} = request.query; // Obtém courseId, disciplinaIds, e periodos dos parâmetros de consulta
 
     try {
+        let disciplinaIdArray = [];
+        let periodoArray = [];
+
+        // Verifica se disciplinaIds foi fornecido e é um array válido
+        if (disciplinaIds) {
+            try {
+                disciplinaIdArray = JSON.parse(disciplinaIds);
+                if (!Array.isArray(disciplinaIdArray)) {
+                    return response.status(400).json({error: "O parâmetro disciplinaIds deve ser um array."});
+                }
+            } catch (e) {
+                return response.status(400).json({error: "O parâmetro disciplinaIds deve ser um array JSON válido."});
+            }
+        }
+
+        // Verifica se periodos foi fornecido e é um array válido
+        if (periodos) {
+            try {
+                periodoArray = JSON.parse(periodos);
+                if (!Array.isArray(periodoArray)) {
+                    return response.status(400).json({error: "O parâmetro periodos deve ser um array."});
+                }
+            } catch (e) {
+                return response.status(400).json({error: "O parâmetro periodos deve ser um array JSON válido."});
+            }
+        }
+
         let queryOptions = {
             include: [
                 {
@@ -16,7 +43,7 @@ const buscarPerguntas = async (request, response) => {
                 },
                 {
                     model: Disciplinas,
-                    attributes: ['nome'],
+                    attributes: ['nome', 'periodo'], // Inclui o período nas disciplinas
                     include: [
                         {
                             model: Cursos,
@@ -24,22 +51,19 @@ const buscarPerguntas = async (request, response) => {
                             where: courseId ? {id: courseId} : null, // Filtra pelo courseId se for fornecido
                         }
                     ],
+                    where: {
+                        ...(disciplinaIdArray.length > 0 && {id: {[Op.in]: disciplinaIdArray}}), // Filtra pelo array de disciplinaIds se for fornecido
+                        ...(periodoArray.length > 0 && {periodo: {[Op.in]: periodoArray}}), // Filtra pelo array de periodos se for fornecido
+                    },
                 }
             ],
         };
 
-        // Adiciona a cláusula where apenas se o courseId for fornecido
-        if (courseId) {
-            queryOptions.where = {
-                '$Disciplina.Curso.id$': courseId, // Filtro para garantir que a pergunta pertença a uma disciplina do curso
-            };
-        }
-
         let perguntas = await Perguntas.findAll(queryOptions);
 
-        // Retorna 404 se não encontrar nenhuma pergunta associada ao courseId
+        // Retorna 404 se não encontrar nenhuma pergunta associada aos filtros fornecidos
         if (perguntas.length === 0) {
-            return response.status(404).json({message: "Nenhuma pergunta encontrada para o curso especificado."});
+            return response.status(404).json({message: "Nenhuma pergunta encontrada para os filtros especificados."});
         }
 
         response.status(200).json(perguntas);
