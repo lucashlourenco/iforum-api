@@ -31,6 +31,9 @@ const Disciplinas = sequelize.define('Disciplinas', {
     }
 });
 
-
+Disciplinas.associate = (models) => {
+    Disciplinas.belongsTo(models.Cursos, { foreignKey: 'curso_id' });
+    Disciplinas.hasMany(models.Perguntas, { foreignKey: 'disciplina_id' });
+};
     
 module.exports = Disciplinas;

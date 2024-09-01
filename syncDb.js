@@ -8,6 +8,27 @@ const Comentarios = require('./src/models/comentariosdb');
 const sequelize = require("./db");
 const populateDatabase = require('./src/helpers/populateDb');
 
+Usuarios.hasMany(Perguntas, { foreignKey: 'usuario_id' });
+Perguntas.belongsTo(Usuarios, { foreignKey: 'usuario_id' });
+
+Usuarios.hasMany(Respostas, { foreignKey: 'id_usuario' });
+Respostas.belongsTo(Usuarios, { foreignKey: 'id_usuario' });
+
+Perguntas.hasMany(Respostas, { foreignKey: 'pergunta_id' });
+Respostas.belongsTo(Perguntas, { foreignKey: 'pergunta_id' });
+
+Respostas.hasMany(Comentarios, { foreignKey: 'id_resposta' });
+Comentarios.belongsTo(Respostas, { foreignKey: 'id_resposta' });
+
+Usuarios.hasMany(Comentarios, { foreignKey: 'id_usuario' });
+Comentarios.belongsTo(Usuarios, { foreignKey: 'id_usuario' });
+
+Disciplinas.hasMany(Perguntas, { foreignKey: 'disciplina_id' });
+Perguntas.belongsTo(Disciplinas, { foreignKey: 'disciplina_id' });
+
+Cursos.hasMany(Disciplinas, { foreignKey: 'curso_id' });
+Disciplinas.belongsTo(Cursos, { foreignKey: 'curso_id' });
+
 async function checkIfTableExists(tableName) {
     const queryInterface = sequelize.getQueryInterface();
     const tables = await queryInterface.showAllTables();
