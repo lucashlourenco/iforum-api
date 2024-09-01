@@ -3,10 +3,15 @@ const routes = require('./src/routes/rotasCurso.js');
 const cors = require('cors');
 const app = express();
 
-
 app.use(express.json());
 app.use(cors());
 app.use(routes);
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 
 const Usuarios = require("./src/models/usuariosdb.js");
 const Cursos = require("./src/models/cursosdb.js");
@@ -26,7 +31,7 @@ const rotasPergunta = require("./src/routes/rotasPergunta.js");
 const rotasResposta = require("./src/routes/rotasRespostas.js");
 const rotasComentario = require("./src/routes/rotasComentario.js");
 const { Sequelize } = require('sequelize');
-
+const populateDatabase = require('./src/helpers/populateDb.js')
 const syncDatabase = require("./syncDb.js");
 syncDatabase();
 

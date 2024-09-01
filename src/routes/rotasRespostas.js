@@ -11,7 +11,7 @@ router.get('/', respostaController.buscarRespostas);
 router.post('/', respostaController.criarResposta)
 router.put('/:id', respostaController.atualizarResposta)
 router.delete('/:id', respostaController.deletarResposta)
-
+router.get('/buscar/:string', respostaController.buscarRespostasPorString)
 
 
 module.exports = router;
