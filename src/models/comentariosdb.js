@@ -33,4 +33,9 @@ const Comentarios = sequelize.define('Comentarios', {
 });
 
 
+Comentarios.associate = (models) => {
+    Comentarios.belongsTo(models.Usuarios, { foreignKey: 'id_usuario' });
+    Comentarios.belongsTo(models.Respostas, { foreignKey: 'id_resposta' });
+};
+
 module.exports = Comentarios;

@@ -18,4 +18,8 @@ const Cursos = sequelize.define('Cursos', {
     }
     });
 
+Cursos.associate = (models) => {
+    Cursos.hasMany(models.Disciplinas, { foreignKey: 'curso_id' });
+};
+
 module.exports = Cursos;
