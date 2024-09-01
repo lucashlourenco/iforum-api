@@ -1,6 +1,12 @@
-const express = require("express");
+const express = require('express');
+const routes = require('./src/routes/rotasCurso.js');
+const cors = require('cors');
 const app = express();
+
+
 app.use(express.json());
+app.use(cors());
+app.use(routes);
 
 const Usuarios = require("./src/models/usuariosdb.js");
 const Cursos = require("./src/models/cursosdb.js");
@@ -24,20 +30,11 @@ const { Sequelize } = require('sequelize');
 const syncDatabase = require("./syncDb.js");
 syncDatabase();
 
-
-
 app.use("/usuarios", rotasUsuario);
-
 app.use("/cursos", rotasCurso);
-
 app.use("/disciplinas", rotasDisciplina);
-
 app.use("/perguntas", rotasPergunta);
-
 app.use("/respostas", rotasResposta);
-
 app.use("/comentarios", rotasComentario);
 
-
-
-app.listen(8081, () => console.log("O servidor está funcionando."));
+app.listen(8080, () => console.log("O servidor está funcionando."));

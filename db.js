@@ -1,10 +1,10 @@
-// const env = require("dotenv")
+const env = require("dotenv")
 const Sequelize = require("sequelize");
 
-// env.config()
+ env.config()
 
 const sequelize = new Sequelize("iforum", "root", "12345", {
-    host: "mysql_db",
+    host: "127.0.0.1",
     dialect: "mysql"
 });
 

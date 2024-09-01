@@ -1,8 +1,5 @@
-# Use root/example as user/password credentials
-version: '2.24'
 
 services:
-
   mysql_db:
     image: mysql
     environment:
@@ -12,9 +9,6 @@ services:
       - ./mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
-    restart: always
-
-      
   
   api:
     build: .
@@ -25,6 +19,5 @@ services:
     ports:
     - "8081:8081"
     command: sh -c "while ! nc -z mysql_db 3306; do sleep 1; done; npm run dev"
-
 
 
