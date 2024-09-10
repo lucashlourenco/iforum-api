@@ -1,4 +1,6 @@
 const Usuarios = require("../models/usuariosdb.js");
+const Respostas = require("../models/respostasdb");
+const Comentarios = require("../models/comentariosdb");
 
 const buscarUsuarios = async (request, response) => {
     try {
@@ -107,6 +109,37 @@ const buscarUsuarioPorId = async (request, response) => {
     }
 };
 
+const contarRespostasEComentariosPorUsuario = async (request, response) => {
+    try {
+        const usuarioId = request.params.usuarioId;  // Captura o ID do usuário da URL
+
+        // Contar quantas respostas o usuário fez
+        const totalRespostas = await Respostas.count({
+            where: {id_usuario: usuarioId}
+        });
+
+        // Contar quantos comentários o usuário fez
+        const totalComentarios = await Comentarios.count({
+            where: {id_usuario: usuarioId}
+        });
+
+        const totalCurtidasRespostas = await Respostas.sum('curtidas', {
+            where: {id_usuario: usuarioId}
+        });
+
+        // Retornar o total de respostas e comentários
+        response.status(200).json({
+            totalRespostas,
+            totalComentarios,
+            totalCurtidasRespostas: totalCurtidasRespostas || 0
+
+        });
+    } catch (error) {
+        console.error("Erro ao contar respostas e comentários:", error);
+        response.status(500).json({error: "Erro ao contar respostas e comentários"});
+    }
+};
+
 
 module.exports = {
     buscarUsuarios,
@@ -114,5 +147,6 @@ module.exports = {
     atualizarUsuario,
     deletarUsuario,
     loginUsuarios,
-    buscarUsuarioPorId
+    buscarUsuarioPorId,
+    contarRespostasEComentariosPorUsuario
 };
