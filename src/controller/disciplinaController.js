@@ -117,11 +117,35 @@ const deletarDisciplina = async (request, response) => {
     }
 }
 
+const buscarDisciplinaPorId = async (request, response) => {
+    try {
+        const id = request.params.id;
+        const disciplina = await Disciplinas.findByPk(id, {
+            include: [
+                {
+                    model: Cursos,
+                    attributes: ['nome']  // Inclui o nome do curso ao qual a disciplina pertence
+                }
+            ]
+        });
+
+        if (disciplina) {
+            response.status(200).json(disciplina);
+        } else {
+            response.status(404).json({error: "Disciplina não encontrada"});
+        }
+    } catch (error) {
+        console.error("Erro ao buscar disciplina por ID:", error);
+        response.status(500).json({error: "Erro ao buscar disciplina"});
+    }
+};
+
 module.exports = {
     buscarDisciplinas,
     criarDisciplina,
     atualizarDisciplina,
     deletarDisciplina,
-    buscarDisciplinasPorPeriodo
+    buscarDisciplinasPorPeriodo,
+    buscarDisciplinaPorId
 
 }
