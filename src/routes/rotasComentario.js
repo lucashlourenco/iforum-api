@@ -8,10 +8,11 @@ const router = express.Router()
 
 
 router.get('/', comentarioController.buscarComentarios);
+router.get('/:id', comentarioController.buscarComentarioPorId);
+
 router.post('/', comentarioController.criarComentario)
 router.put('/:id', comentarioController.atualizarComentario)
 router.delete('/:id', comentarioController.deletarComentario)
-
 
 
 module.exports = router;

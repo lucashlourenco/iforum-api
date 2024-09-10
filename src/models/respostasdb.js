@@ -38,5 +38,10 @@ const Respostas = sequelize.define('Respostas', {
     }
 });
 
+Respostas.associate = (models) => {
+    Respostas.belongsTo(models.Usuarios, { foreignKey: 'id_usuario' });
+    Respostas.belongsTo(models.Perguntas, { foreignKey: 'pergunta_id' });
+    Respostas.hasMany(models.Comentarios, { foreignKey: 'id_resposta' });
+};
     
 module.exports = Respostas;
