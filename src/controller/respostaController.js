@@ -1,17 +1,20 @@
 const Respostas = require("../models/respostasdb.js");
-const { Op } = require('sequelize');
+const Usuarios = require("../models/usuariosdb.js");
 
-const buscarRespostas = async(request,response) => {
+const {Op} = require('sequelize');
+const Comentarios = require("../models/comentariosdb");
+
+const buscarRespostas = async (request, response) => {
     try {
         let respostas = await Respostas.findAll();
         response.status(200).json(respostas);
     } catch (error) {
         console.error("Erro ao buscar respostas:", error);
-        response.status(500).json({ error: "Erro ao buscar respostas" });
+        response.status(500).json({error: "Erro ao buscar respostas"});
     }
 }
 
-const criarResposta = async(request,response)=> {
+const criarResposta = async (request, response) => {
     try {
         const {id_usuario, descricao, pergunta_id} = request.body;
         let novaResposta = await Respostas.create({
@@ -24,11 +27,11 @@ const criarResposta = async(request,response)=> {
         response.status(201).json(novaResposta);
     } catch (error) {
         console.error("Erro ao criar resposta:", error);
-        response.status(500).json({ error: "Erro ao criar resposta" });
+        response.status(500).json({error: "Erro ao criar resposta"});
     }
 }
 
-const atualizarResposta = async(request,response) => {
+const atualizarResposta = async (request, response) => {
     try {
         let id = request.params.id;
         let {id_usuario, descricao, pergunta_id} = request.body;
@@ -40,28 +43,28 @@ const atualizarResposta = async(request,response) => {
             await respostas.save();
             response.status(200).json(respostas);
         } else {
-            response.status(404).json({ error: "Resposta não encontrada" });
+            response.status(404).json({error: "Resposta não encontrada"});
         }
     } catch (error) {
         console.error("Erro ao atualizar resposta:", error);
-        response.status(500).json({ error: "Erro ao atualizar resposta" });
+        response.status(500).json({error: "Erro ao atualizar resposta"});
     }
 }
 
-const deletarResposta = async (request,response) => {
+const deletarResposta = async (request, response) => {
     try {
         let id = request.params.id;
         let respostas = await Respostas.findByPk(id);
         if (respostas) {
             await respostas.destroy();
-            response.status(200).json({ message: "Resposta deletada com sucesso" });
+            response.status(200).json({message: "Resposta deletada com sucesso"});
         } else {
-            response.status(404).json({ error: "Resposta não encontrada" });
+            response.status(404).json({error: "Resposta não encontrada"});
         }
     } catch (error) {
         console.error("Erro ao deletar Resposta:", error);
-        response.status(500).json({ error: "Erro ao deletar resposta" });
-    
+        response.status(500).json({error: "Erro ao deletar resposta"});
+
     }
 }
 
@@ -78,18 +81,90 @@ const buscarRespostasPorString = async (request, response) => {
         if (respostas.length > 0) {
             response.status(200).json(respostas);
         } else {
-            response.status(404).json({ error: "Nenhuma resposta encontrada" });
+            response.status(404).json({error: "Nenhuma resposta encontrada"});
         }
     } catch (error) {
         console.error("Erro ao buscar respostas por string:", error);
-        response.status(500).json({ error: "Erro ao buscar respostas por string" });
+        response.status(500).json({error: "Erro ao buscar respostas por string"});
     }
 }
+
+
+const buscarRespostaPorId = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        let resposta = await Respostas.findByPk(id);
+
+        if (resposta) {
+            response.status(200).json(resposta);
+        } else {
+            response.status(404).json({error: "Resposta não encontrada"});
+        }
+    } catch (error) {
+        console.error("Erro ao buscar resposta por ID:", error);
+        response.status(500).json({error: "Erro ao buscar resposta"});
+    }
+};
+
+const buscarRespostasPorPerguntaId = async (request, response) => {
+    try {
+        console.log(request.params)
+        const perguntaId = request.params.perguntaId;  // Captura o ID da pergunta da URL
+
+        let respostas = await Respostas.findAll({
+            where: {pergunta_id: perguntaId},  // Filtra pelas respostas associadas à pergunta
+            include: [
+                {
+                    model: Usuarios,  // Inclui os dados do usuário que respondeu
+                    attributes: ['nome']  // Retorna apenas o nome do usuário
+                }
+            ]
+        });
+
+        if (respostas.length > 0) {
+            response.status(200).json(respostas);
+        } else {
+            response.status(404).json({message: "Nenhuma resposta encontrada para esta pergunta."});
+        }
+    } catch (error) {
+        console.error("Erro ao buscar respostas por pergunta:", error);
+        response.status(500).json({error: "Erro ao buscar respostas"});
+    }
+};
+const buscarComentariosPorRespostaId = async (request, response) => {
+    try {
+        const respostaId = request.params.respostaId;  // Captura o ID da resposta da URL
+
+        let comentarios = await Comentarios.findAll({
+            where: {id_resposta: respostaId},  // Filtra pelos comentários associados à resposta
+            include: [
+                {
+                    model: Usuarios,  // Inclui os dados do usuário que postou o comentário
+                    attributes: ['nome']  // Retorna apenas o nome do usuário
+                }
+            ]
+        });
+
+        if (comentarios.length > 0) {
+            response.status(200).json(comentarios);
+        } else {
+            response.status(404).json({message: "Nenhum comentário encontrado para esta resposta."});
+        }
+    } catch (error) {
+        console.error("Erro ao buscar comentários por resposta:", error);
+        response.status(500).json({error: "Erro ao buscar comentários"});
+    }
+};
+
 
 module.exports = {
     buscarRespostas,
     criarResposta,
     atualizarResposta,
     deletarResposta,
-    buscarRespostasPorString
+    buscarRespostasPorString,
+    buscarRespostaPorId,
+    buscarRespostasPorPerguntaId,
+    buscarComentariosPorRespostaId
 }

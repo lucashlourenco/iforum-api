@@ -80,10 +80,55 @@ const buscarQuantidadePeriodos = async (request, response) => {
     }
 };
 
+const buscarCursoPorId = async (request, response) => {
+    try {
+        const {id} = request.params; // Obtém o ID dos parâmetros da URL
+
+        // Busca o curso pelo ID
+        let curso = await Cursos.findByPk(id);
+
+        // Verifica se o curso foi encontrado
+        if (curso) {
+            response.status(200).json(curso); // Retorna o curso encontrado
+        } else {
+            response.status(404).json({error: "Curso não encontrado"}); // Retorna erro se o curso não for encontrado
+        }
+    } catch (error) {
+        console.error("Erro ao buscar o curso:", error);
+        response.status(500).json({error: "Erro ao buscar o curso"}); // Tratamento de erro
+    }
+}
+
+const buscarDisciplinasPorCurso = async (request, response) => {
+    try {
+        const {id} = request.params; // Obtém o ID do curso dos parâmetros da URL
+
+        // Busca o curso pelo ID e inclui suas disciplinas
+        let curso = await Cursos.findByPk(id, {
+            include: {
+                model: Disciplinas, // Inclui as disciplinas relacionadas ao curso
+                attributes: ['id', 'nome', 'periodo'] // Seleciona os campos desejados das disciplinas
+            }
+        });
+
+        // Verifica se o curso foi encontrado
+        if (curso) {
+            response.status(200).json(curso.Disciplinas); // Retorna as disciplinas do curso
+        } else {
+            response.status(404).json({error: "Curso não encontrado"}); // Retorna erro se o curso não for encontrado
+        }
+    } catch (error) {
+        console.error("Erro ao buscar disciplinas do curso:", error);
+        response.status(500).json({error: "Erro ao buscar disciplinas do curso"}); // Tratamento de erro
+    }
+}
+
 module.exports = {
     buscarCursos,
     criarCurso,
     atualizarCurso,
     deletarCurso,
-    buscarQuantidadePeriodos
-}
+    buscarQuantidadePeriodos,
+    buscarCursoPorId,
+    buscarDisciplinasPorCurso
+};

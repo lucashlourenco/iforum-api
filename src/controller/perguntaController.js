@@ -72,23 +72,36 @@ const buscarPerguntas = async (request, response) => {
         response.status(500).json({error: "Erro ao buscar as perguntas"});
     }
 };
+
 const criarPergunta = async (request, response) => {
     try {
         const {titulo, descricao, usuario_id, disciplina_id} = request.body;
+
+        // Cria a nova pergunta
         let novaPergunta = await Perguntas.create({
             titulo,
             descricao,
             usuario_id,
             disciplina_id
         });
+
         console.log("Nova pergunta criada:", novaPergunta);
+
+        // Após criar a pergunta, busque ela novamente, incluindo os dados de Usuario e Disciplina
+        novaPergunta = await Perguntas.findOne({
+            where: {id: novaPergunta.id},
+            include: [
+                {model: Usuarios, attributes: ['nome']}, // Inclui o nome do usuário
+                {model: Disciplinas, attributes: ['nome']} // Inclui o nome da disciplina
+            ]
+        });
 
         response.status(201).json(novaPergunta);
     } catch (error) {
         console.error("Erro ao criar pergunta:", error);
         response.status(500).json({error: "Erro ao criar pergunta"});
     }
-}
+};
 
 const atualizarPergunta = async (request, response) => {
     try {
@@ -169,12 +182,50 @@ const buscarPerguntasPorDisciplina = async (request, response) => {
     }
 };
 
+
+const buscarPerguntaPorId = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        let pergunta = await Perguntas.findOne({
+            where: {id},
+            include: [
+                {
+                    model: Usuarios,
+                    attributes: ['nome']  // Inclui o nome do usuário que fez a pergunta
+                },
+                {
+                    model: Disciplinas,
+                    attributes: ['nome'],  // Inclui o nome da disciplina relacionada à pergunta
+                    include: [
+                        {
+                            model: Cursos,
+                            attributes: ['nome']  // Inclui o nome do curso relacionado à disciplina
+                        }
+                    ]
+                }
+            ]
+        });
+
+        if (pergunta) {
+            response.status(200).json(pergunta);
+        } else {
+            response.status(404).json({error: "Pergunta não encontrada"});
+        }
+    } catch (error) {
+        console.error("Erro ao buscar pergunta por ID:", error);
+        response.status(500).json({error: "Erro ao buscar pergunta"});
+    }
+};
+
+
 module.exports = {
     buscarPerguntas,
     criarPergunta,
     atualizarPergunta,
     deletarPergunta,
     buscarPerguntasPorString,
-    buscarPerguntasPorDisciplina
+    buscarPerguntasPorDisciplina,
+    buscarPerguntaPorId
 
 }
