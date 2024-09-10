@@ -14,6 +14,7 @@ const buscarRespostas = async (request, response) => {
     }
 }
 
+
 const criarResposta = async (request, response) => {
     try {
         const {id_usuario, descricao, pergunta_id} = request.body;
