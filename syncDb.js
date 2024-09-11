@@ -4,30 +4,30 @@ const Disciplinas = require('./src/models/disciplinasdb');
 const Perguntas = require('./src/models/perguntasdb');
 const Respostas = require('./src/models/respostasdb');
 const Comentarios = require('./src/models/comentariosdb');
-
+const Curtidas = require('./src/models/curtidasdb');
 const sequelize = require("./db");
 const populateDatabase = require('./src/helpers/populateDb');
 
-Usuarios.hasMany(Perguntas, { foreignKey: 'usuario_id' });
-Perguntas.belongsTo(Usuarios, { foreignKey: 'usuario_id' });
+Usuarios.hasMany(Perguntas, {foreignKey: 'usuario_id'});
+Perguntas.belongsTo(Usuarios, {foreignKey: 'usuario_id'});
 
-Usuarios.hasMany(Respostas, { foreignKey: 'id_usuario' });
-Respostas.belongsTo(Usuarios, { foreignKey: 'id_usuario' });
+Usuarios.hasMany(Respostas, {foreignKey: 'id_usuario'});
+Respostas.belongsTo(Usuarios, {foreignKey: 'id_usuario'});
 
-Perguntas.hasMany(Respostas, { foreignKey: 'pergunta_id' });
-Respostas.belongsTo(Perguntas, { foreignKey: 'pergunta_id' });
+Perguntas.hasMany(Respostas, {foreignKey: 'pergunta_id'});
+Respostas.belongsTo(Perguntas, {foreignKey: 'pergunta_id'});
 
-Respostas.hasMany(Comentarios, { foreignKey: 'id_resposta' });
-Comentarios.belongsTo(Respostas, { foreignKey: 'id_resposta' });
+Respostas.hasMany(Comentarios, {foreignKey: 'id_resposta'});
+Comentarios.belongsTo(Respostas, {foreignKey: 'id_resposta'});
 
-Usuarios.hasMany(Comentarios, { foreignKey: 'id_usuario' });
-Comentarios.belongsTo(Usuarios, { foreignKey: 'id_usuario' });
+Usuarios.hasMany(Comentarios, {foreignKey: 'id_usuario'});
+Comentarios.belongsTo(Usuarios, {foreignKey: 'id_usuario'});
 
-Disciplinas.hasMany(Perguntas, { foreignKey: 'disciplina_id' });
-Perguntas.belongsTo(Disciplinas, { foreignKey: 'disciplina_id' });
+Disciplinas.hasMany(Perguntas, {foreignKey: 'disciplina_id'});
+Perguntas.belongsTo(Disciplinas, {foreignKey: 'disciplina_id'});
 
-Cursos.hasMany(Disciplinas, { foreignKey: 'curso_id' });
-Disciplinas.belongsTo(Cursos, { foreignKey: 'curso_id' });
+Cursos.hasMany(Disciplinas, {foreignKey: 'curso_id'});
+Disciplinas.belongsTo(Cursos, {foreignKey: 'curso_id'});
 
 async function checkIfTableExists(tableName) {
     const queryInterface = sequelize.getQueryInterface();
@@ -46,9 +46,10 @@ async function syncDatabase() {
         const perguntasTableExists = await checkIfTableExists('Perguntas');
         const respostasTableExists = await checkIfTableExists('Respostas');
         const comentariosTableExists = await checkIfTableExists('Comentarios');
+        const curtidasTableExists = await checkIfTableExists('Curtidas');
 
-        if (!usuariosTableExists || !cursosTableExists || !disciplinasTableExists || !perguntasTableExists || !respostasTableExists || !comentariosTableExists) {
-            await sequelize.sync({ alter: true });
+        if (!usuariosTableExists || !curtidasTableExists || !cursosTableExists || !disciplinasTableExists || !perguntasTableExists || !respostasTableExists || !comentariosTableExists) {
+            await sequelize.sync({alter: true});
             console.log('Tabelas criadas ou atualizadas com sucesso');
             console.log("\n\n Iniciando script de população\n\n")
             populateDatabase()

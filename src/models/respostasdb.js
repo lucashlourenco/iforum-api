@@ -2,22 +2,22 @@ const Sequelize = require("sequelize");
 const sequelize = require("../../db");
 
 
-
 sequelize
     .authenticate()
-    .then(function() {
+    .then(function () {
         console.log('Conectado');
     })
     .catch(function (erro) {
         console.log('Erro ao conectar: ' + erro);
     });
-    
+
 const Respostas = sequelize.define('Respostas', {
     id_usuario: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references:  { model: 'Usuarios', 
-        key: 'id'
+        references: {
+            model: 'Usuarios',
+            key: 'id'
         }
     },
     descricao: {
@@ -39,9 +39,11 @@ const Respostas = sequelize.define('Respostas', {
 });
 
 Respostas.associate = (models) => {
-    Respostas.belongsTo(models.Usuarios, { foreignKey: 'id_usuario' });
-    Respostas.belongsTo(models.Perguntas, { foreignKey: 'pergunta_id' });
-    Respostas.hasMany(models.Comentarios, { foreignKey: 'id_resposta' });
+    Respostas.belongsTo(models.Usuarios, {foreignKey: 'id_usuario'});
+    Respostas.belongsTo(models.Perguntas, {foreignKey: 'pergunta_id'});
+    Respostas.hasMany(models.Comentarios, {foreignKey: 'id_resposta'});
+    Respostas.hasMany(require('./curtidasdb'), {foreignKey: 'id_resposta', as: 'curtidas'});
+
 };
-    
+
 module.exports = Respostas;

@@ -4,7 +4,7 @@ const sequelize = require("../../db");
 
 sequelize
     .authenticate()
-    .then(function() {
+    .then(function () {
         console.log('Conectado');
     })
     .catch(function (erro) {
@@ -33,8 +33,11 @@ const Usuarios = sequelize.define('Usuarios', {
 });
 
 Usuarios.associate = (models) => {
-    Usuarios.hasMany(models.Perguntas, { foreignKey: 'usuario_id' });
-    Usuarios.hasMany(models.Respostas, { foreignKey: 'id_usuario' });
-    Usuarios.hasMany(models.Comentarios, { foreignKey: 'id_usuario' });
+    Usuarios.hasMany(models.Perguntas, {foreignKey: 'usuario_id'});
+    Usuarios.hasMany(models.Respostas, {foreignKey: 'id_usuario'});
+    Usuarios.hasMany(models.Comentarios, {foreignKey: 'id_usuario'});
+
+    Usuarios.hasMany(models.Curtidas, {foreignKey: 'id_usuario'});
+
 };
 module.exports = Usuarios;
