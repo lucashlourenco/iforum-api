@@ -18,10 +18,12 @@ const buscarRespostas = async (request, response) => {
 const criarResposta = async (request, response) => {
   try {
     const { id_usuario, descricao, pergunta_id } = request.body;
+    p_id = parseInt(pergunta_id, 10)
     let novaResposta = await Respostas.create({
       id_usuario,
       descricao,
-      pergunta_id
+      pergunta_id: p_id,
+      curtidas: 0
     });
     console.log("Nova resposta criada:", novaResposta);
 
@@ -30,7 +32,7 @@ const criarResposta = async (request, response) => {
     console.error("Erro ao criar resposta:", error);
     response.status(500).json({ error: "Erro ao criar resposta" });
   }
-}
+};
 
 const atualizarResposta = async (request, response) => {
   try {
