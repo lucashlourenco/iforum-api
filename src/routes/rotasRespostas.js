@@ -18,5 +18,8 @@ router.put('/:id', respostaController.atualizarResposta)
 router.delete('/:id', respostaController.deletarResposta)
 router.get('/buscar/:string', respostaController.buscarRespostasPorString)
 
+router.post('/:id/like', respostaController.adicionarLike);
+router.post('/:id/dislike', respostaController.removerLike);
+
 
 module.exports = router;
